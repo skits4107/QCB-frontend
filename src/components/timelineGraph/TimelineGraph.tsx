@@ -7,7 +7,7 @@ function TimelineGraph(){
     return (
         <TransformWrapper limitToBounds={false}>
             <TransformComponent>
-                {/* exmaple of the nodes, will be generated from data in future*/}
+                {/* exmaple of node. nodes will be generated from data in future*/}
                 <div style={{ width: "100vw", height: "100vh", position: "relative"}}>
                   <TimelineNode answer="cheesefi3n i" question="root question. do you like cheese or apples?" x={500} y={500}/>
                 </div>

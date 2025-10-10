@@ -3,7 +3,8 @@ import './TimelineNode.css'
 type NodeData = {
     data:string,
     x:number,
-    y:number
+    y:number,
+    live:boolean
 }
 
 function truncateText(text: string, maxChars: number) {
@@ -11,7 +12,7 @@ function truncateText(text: string, maxChars: number) {
   return text.slice(0, maxChars - 3) + "...";
 }
 
-function TimelineNode({data, x, y}:NodeData){
+function TimelineNode({data, x, y, live}:NodeData){
     let content;
     let radius:number = 50;
     if (data){
@@ -27,10 +28,15 @@ function TimelineNode({data, x, y}:NodeData){
                     </text>;
     }
     
+    let color:string = "#0bc8c8ff";
+    if (live){
+        color = "#12d18eff"
+    }
+    
     return (
         <>
             <svg width="100vw" height="100vh">
-                <circle className="NodeCircle" cx={x} cy={y} r={radius} fill="#00CCCC"/>
+                <circle className="NodeCircle" cx={x} cy={y} r={radius} fill={color}/>
                 {content}
             </svg>
         </>

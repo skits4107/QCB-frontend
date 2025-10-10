@@ -1,4 +1,5 @@
 import './TimelineNode.css'
+import { useState } from "react"
 
 type NodeData = {
     data:string,
@@ -14,7 +15,7 @@ function truncateText(text: string, maxChars: number) {
 
 function TimelineNode({data, x, y, live}:NodeData){
     let content;
-    let radius:number = 50;
+    const [radius, setRadius] = useState(50);
     if (data){
         content =  <text 
                     key="answer" 
@@ -23,12 +24,14 @@ function TimelineNode({data, x, y, live}:NodeData){
                     y={y}
                     textAnchor="middle"
                     dominantBaseline="middle"
+                    onMouseOver={()=>setRadius(60)} 
+                    onMouseOut={()=>setRadius(50)}
                     fill="white">
                         {truncateText(data, 10)}
                     </text>;
     }
     
-    let color:string = "#0bc8c8ff";
+    let color:string = "#cf1818ff";
     if (live){
         color = "#12d18eff"
     }
@@ -36,8 +39,13 @@ function TimelineNode({data, x, y, live}:NodeData){
     return (
         <>
             <svg width="100vw" height="100vh">
-                <circle className="NodeCircle" cx={x} cy={y} r={radius} fill={color}/>
+            
+                <circle className="NodeCircle" cx={x} cy={y} r={radius} fill={color}
+                    onMouseOver={()=>setRadius(60)} 
+                    onMouseOut={()=>setRadius(50)}/>
+                    
                 {content}
+                
             </svg>
         </>
     );

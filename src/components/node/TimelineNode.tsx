@@ -3,8 +3,8 @@ import { useState } from "react"
 
 type NodeData = {
     data:string,
-    x:number,
-    y:number,
+    x:number|string,
+    y:number|string,
     live:boolean
 }
 
@@ -38,15 +38,15 @@ function TimelineNode({data, x, y, live}:NodeData){
     
     return (
         <>
-            <svg width="100vw" height="100vh">
             
-                <circle className="NodeCircle" cx={x} cy={y} r={radius} fill={color}
-                    onMouseOver={()=>setRadius(60)} 
-                    onMouseOut={()=>setRadius(50)}/>
-                    
-                {content}
+            
+            <circle className="NodeCircle" cx={x} cy={y} r={radius} fill={color}
+                onMouseOver={()=>setRadius(60)} 
+                onMouseOut={()=>setRadius(50)}/>
                 
-            </svg>
+            {content}
+            
+       
         </>
     );
 }

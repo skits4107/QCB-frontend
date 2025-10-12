@@ -106,7 +106,10 @@ function TimelineGraph(){
         2: {"children":[], "data":"milk shake", "live":false},
         3: {"children":[4,5], "data":"should I watch show Y or Show X", "live":true},
         4: {"children":[], "data":"Y", "live":false},
-        5: {"children":[], "data":"X", "live":true}
+        5: {"children":[6], "data":"X", "live":true},
+        6: {"children":[7,8], "data":"question", "live":true},
+        7: {"children":[], "data":"A", "live":false},
+        8: {"children":[], "data":"B", "live":true}
     });
 
     let links:JSX.Element[] = [];
@@ -116,7 +119,8 @@ function TimelineGraph(){
 
     return (
         <TransformWrapper limitToBounds={false}>
-            <TransformComponent>
+            <TransformComponent >
+                {/* TODO: replace viewbox with some other method for endless rendering*/}
                 <svg viewBox="0 0 100 100" style={{ width: "100vw", height: "100vh", position: "relative"}}>
                     <defs>
                         {path_colors}

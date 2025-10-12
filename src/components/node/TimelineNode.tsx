@@ -15,7 +15,7 @@ function truncateText(text: string, maxChars: number) {
 
 function TimelineNode({data, x, y, live}:NodeData){
     let content;
-    const [radius, setRadius] = useState(50);
+    const [radius, setRadius] = useState(1);
     if (data){
         content =  <text 
                     key="answer" 
@@ -24,8 +24,8 @@ function TimelineNode({data, x, y, live}:NodeData){
                     y={y}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    onMouseOver={()=>setRadius(60)} 
-                    onMouseOut={()=>setRadius(50)}
+                    onMouseOver={()=>setRadius(2)} 
+                    onMouseOut={()=>setRadius(1)}
                     fill="white">
                         {truncateText(data, 10)}
                     </text>;
@@ -41,8 +41,9 @@ function TimelineNode({data, x, y, live}:NodeData){
             
             
             <circle className="NodeCircle" cx={x} cy={y} r={radius} fill={color}
-                onMouseOver={()=>setRadius(60)} 
-                onMouseOut={()=>setRadius(50)}/>
+                onMouseOver={()=>setRadius(2)} 
+                onMouseOut={()=>setRadius(1)}
+                style={{ filter: `drop-shadow(0px 0px 10px ${color})` }}/>
                 
             {content}
             

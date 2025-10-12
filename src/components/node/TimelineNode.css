@@ -1,3 +1,12 @@
 .NodeText{
-    font-size: 14px;
+    font-size: 0.1vw;
+    opacity: 50%;
+}
+
+.NodeCircle{
+
+    opacity: 50%;
+
+    border-radius: 50%;
+
 }

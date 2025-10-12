@@ -55,6 +55,8 @@ function GenerateTreeElements(treeData:Record<number, Record<string, any>>, link
         current_node = next_node; 
     }
 
+
+    //NOTE: path should probably be its own component in the future.
     const lineGenerator = line<Point>().x(d => d.x).y(d => d.y).curve(curveCardinal.tension(0.5));
 
     let index:number = 0;
@@ -97,6 +99,7 @@ function GenerateTreeElements(treeData:Record<number, Record<string, any>>, link
 function TimelineGraph(){
 
     //example tree data for now. get from backend later (would be reutning as json fomrated like this).
+    // tree data will probably be passed as a prop.
     const [tree, setTree] = useState<Record<number, Record<string, any>>>({
         0: {"children":[1,2], "data":"should I eat a burger or a milk shake", "live":true},
         1: {"children":[3], "data":"burger", "live":true},

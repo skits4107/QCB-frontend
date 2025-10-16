@@ -9,9 +9,12 @@ type Point = {
     y:number
 }
 
+// returns how big the svg viewbox needs to be
 function GenerateTreeElements(treeData:Record<number, Record<string, any>>, links:JSX.Element[], nodes:JSX.Element[], path_colors:JSX.Element[]){
-    let current_x:number = 50; //50vw
-    let current_y:number = 10; //10vh
+    let current_x:number = 50; 
+    let current_y:number = 10; 
+    let max_x = 100;
+    let max_y = 100;
 
     let current_node:Record<string, any> | null = treeData[0];
 
@@ -36,7 +39,7 @@ function GenerateTreeElements(treeData:Record<number, Record<string, any>>, link
         children.forEach( (child:number) =>{
             let child_node = treeData[child];
             if (!child_node["live"]){
-                    nodes.push(<TimelineNode data={child_node["data"]} x={child_x} y={(child_y)} live={child_node["live"]}/>);
+                    nodes.push(<TimelineNode data={child_node["data"]} x={child_x} y={child_y} live={child_node["live"]}/>);
                     
                     let child_path = structuredClone(paths[0]);
                     child_path.push({x: child_x, y: child_y});
@@ -48,10 +51,12 @@ function GenerateTreeElements(treeData:Record<number, Record<string, any>>, link
                 current_x = child_x
             }
             child_x += 10;
+            if (child_x > max_x) max_x = child_x;
         });
 
         
         current_y += 20
+        if (current_y > max_y) max_y = current_y;
         current_node = next_node; 
     }
 
@@ -88,12 +93,14 @@ function GenerateTreeElements(treeData:Record<number, Record<string, any>>, link
 
         let path_data:string|null = lineGenerator(path);
         if (path_data){
+            console.log(path_data);
             links.push(<path className="TimelinePath" d={path_data} stroke={`url(#path${index})`} strokeWidth="0.5" fill="none" strokeLinejoin="round"/> )
         }
 
         index++;
     });
    
+    return {x:max_x, y:max_y}
 }
 
 function TimelineGraph(){
@@ -109,30 +116,32 @@ function TimelineGraph(){
         5: {"children":[6], "data":"X", "live":true},
         6: {"children":[7,8], "data":"question", "live":true},
         7: {"children":[], "data":"A", "live":false},
-        8: {"children":[], "data":"B", "live":true}
+        8: {"children":[9], "data":"B", "live":true},
+        9:  {"children":[10, 11], "data":"q", "live":true},
+        10: {"children":[], "data":"C", "live":true},
+        11: {"children":[], "data":"D", "live":false},
     });
 
     let links:JSX.Element[] = [];
     let nodes:JSX.Element[] = [];
     let path_colors:JSX.Element[] = [];
-    GenerateTreeElements(tree, links, nodes, path_colors);
+    let viewBoxsize:Point = GenerateTreeElements(tree, links, nodes, path_colors);
 
     return (
         <TransformWrapper limitToBounds={false}>
-            <TransformComponent >
-                {/* TODO: replace viewbox with some other method for endless rendering*/}
-                <svg viewBox="0 0 100 100" style={{ width: "100vw", height: "100vh", position: "relative"}}>
+            <TransformComponent>
+                <svg viewBox={`0 0 ${viewBoxsize.x} ${viewBoxsize.y}`}
+                    style={{ width: "100vw", height: "100vh", position: "relative"}}>
                     <defs>
                         {path_colors}
                     </defs>
                     {links}
                     {nodes}
                 </svg>
-
+               
                 
             </TransformComponent>
         </TransformWrapper>
     );
 }
-
 export default TimelineGraph

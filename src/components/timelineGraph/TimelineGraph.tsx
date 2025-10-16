@@ -61,7 +61,7 @@ function GenerateTreeElements(treeData:Record<number, Record<string, any>>, link
     }
 
 
-    //NOTE: path should probably be its own component in the future.
+    //TODO: path should probably be its own component in the future.
     const lineGenerator = line<Point>().x(d => d.x).y(d => d.y).curve(curveCardinal.tension(0.5));
 
     let index:number = 0;

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import TimelineGraph from "../components/timelineGraph/TimelineGraph";
+import CreateBranchUI from "../components/createBranchUI/createBranchUI";
 
 function TimelinePage(){
     //example tree data for now. get from backend later (would be reutning as json fomrated like this).
@@ -25,6 +26,7 @@ function TimelinePage(){
     return (
     <>
         <TimelineGraph tree={tree}/>
+        <CreateBranchUI tree={tree} setTree={setTree}/>
     </>);
 }
 

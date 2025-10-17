@@ -106,7 +106,7 @@ function TimelineGraph({tree}:timelineTree){
             
             <TransformComponent>
               
-                <svg viewBox={`0 0 ${viewBoxsize.x} ${viewBoxsize.y}`}
+                <svg className="TimelineSVG" viewBox={`0 0 ${viewBoxsize.x} ${viewBoxsize.y}`}
                     style={{ width: "100vw", height: "100vh", position: "relative"}}>
                         {lines}
                     <defs>

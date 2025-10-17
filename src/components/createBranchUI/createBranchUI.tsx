@@ -1,5 +1,5 @@
 import "./CreateBranchUI.css"
-import { Children, useState, type JSX } from "react"
+import { useState, type JSX } from "react"
 
 type timelineTreeProp = {tree: Record<number, Record<string, any>>, setTree: React.Dispatch<React.SetStateAction<Record<number, Record<string, any>>>>};
 

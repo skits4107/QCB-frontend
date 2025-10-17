@@ -1,7 +1,6 @@
 import { useState, type JSX } from "react"
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import TimelineNode from "../node/TimelineNode";
-import { line, curveCardinal } from "d3-shape";
 import "./TimeLineGraph.css"
 
 type Point = {

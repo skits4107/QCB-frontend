@@ -26,14 +26,14 @@ function TimelineNode({data, x, y, live}:NodeData){
                     dominantBaseline="middle"
                     onMouseOver={()=>setRadius(2)} 
                     onMouseOut={()=>setRadius(1)}
-                    fill="white">
+                    fill={live?'rgba(255,255,255,1)' : 'rgba(255,255,255,0.5)'}>
                         {truncateText(data, 10)}
                     </text>;
     }
     
-    let color:string = "#cf1818ff";
+    let color:string = "rgba(221, 76, 50, 0.5)";
     if (live){
-        color = "#12d18eff"
+        color = "rgba(255, 191, 0, 1)";
     }
     
     return (
@@ -43,7 +43,7 @@ function TimelineNode({data, x, y, live}:NodeData){
             <circle className="NodeCircle" cx={x} cy={y} r={radius} fill={color}
                 onMouseOver={()=>setRadius(2)} 
                 onMouseOut={()=>setRadius(1)}
-                style={{ filter: `drop-shadow(0px 0px 10px ${color})` }}/>
+                style={{ filter: `drop-shadow(0px 0px 1px ${color})` }}/>
                 
             {content}
             

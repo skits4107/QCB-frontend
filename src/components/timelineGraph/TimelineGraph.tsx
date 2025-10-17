@@ -10,7 +10,7 @@ type Point = {
 }
 
 // returns how big the svg viewbox needs to be
-function GenerateTreeElements(treeData:Record<number, Record<string, any>>, links:JSX.Element[], nodes:JSX.Element[], path_colors:JSX.Element[]){
+function GenerateTreeElements(treeData:Record<number, Record<string, any>>, links:JSX.Element[], nodes:JSX.Element[], path_colors:JSX.Element[]):Point{
     let current_x:number = 50; 
     let current_y:number = 10; 
     let max_x = 100;
@@ -18,11 +18,8 @@ function GenerateTreeElements(treeData:Record<number, Record<string, any>>, link
 
     let current_node:Record<string, any> | null = treeData[0];
 
-    //stores the points to construct each timeline curve out of.
-    let paths:Point[][] = [[]]
-
+    let index:number = 0;
     while (current_node){
-        paths[0].push({x: current_x, y: current_y})
 
         nodes.push(<TimelineNode data={current_node["data"]} x={current_x} y={current_y} live={current_node["live"]}/>);
 
@@ -36,71 +33,47 @@ function GenerateTreeElements(treeData:Record<number, Record<string, any>>, link
         let child_y = current_y+20;
 
         let next_node:Record<string, any> | null = null;
+        let next_x:number = current_x;
         children.forEach( (child:number) =>{
             let child_node = treeData[child];
+
+            let line_color:string = "rgba(255, 191, 0, 1)";
+            
+            // NOTE: no need to explore dead nodes because they will never have children. Unless we develop technology to communicate across the multiverse of course.
             if (!child_node["live"]){
+                    path_colors.push(<linearGradient id={`lineSeg${index}`} gradientUnits="userSpaceOnUse" x1={current_x} y1={current_y} x2={child_x} y2={child_y}>
+                                        <stop offset="0%"  stopColor="rgba(255, 191, 0, 1)"/>
+                                        <stop offset="75%"  stopColor="rgba(221, 76, 50, 0.5)"/>
+                                    </linearGradient>)
+
+                    line_color = `url(#lineSeg${index})`
+
                     nodes.push(<TimelineNode data={child_node["data"]} x={child_x} y={child_y} live={child_node["live"]}/>);
-                    
-                    let child_path = structuredClone(paths[0]);
-                    child_path.push({x: child_x, y: child_y});
-                    paths.push(child_path);
                 }
             else{
                 //there should only be one live node.
                 next_node = child_node;
-                current_x = child_x
+                next_x = child_x;
             }
+
+            links.push(<line x1={current_x} y1={current_y} x2={child_x} y2={child_y} className="TimelinePath" stroke={line_color} strokeWidth="0.5"/>)
+
             child_x += 10;
             if (child_x > max_x) max_x = child_x;
+            index++;
         });
+        current_x = next_x;
 
         
         current_y += 20
         if (current_y > max_y) max_y = current_y;
         current_node = next_node; 
+        index++;
     }
 
+    return{x:max_x, y:max_y};
 
-    //TODO: path should probably be its own component in the future.
-    const lineGenerator = line<Point>().x(d => d.x).y(d => d.y).curve(curveCardinal.tension(0.5));
-
-    let index:number = 0;
-
-    paths.forEach(path =>{
-        let gradiant_stops:JSX.Element[] = [];
-
-        // the amount each space between each stop in percetnage
-        let stop_diff:number = 100 / path.length;
-
-        for (let i=0; i< path.length-1; i++){
-            gradiant_stops.push(
-                <stop offset={`${i*stop_diff}%`}  stopColor="green"/>
-            )
-        }
-        if (index === 0){ // if it is the live path
-            gradiant_stops.push(<stop offset="100%" stopColor="green"/>)
-        }
-        else{
-            gradiant_stops.push(<stop offset="100%" stopColor="red"/>)
-        }
-        
-
-        path_colors.push(
-            <linearGradient id={`path${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                {gradiant_stops}
-            </linearGradient>
-        );
-
-        let path_data:string|null = lineGenerator(path);
-        if (path_data){
-            console.log(path_data);
-            links.push(<path className="TimelinePath" d={path_data} stroke={`url(#path${index})`} strokeWidth="0.5" fill="none" strokeLinejoin="round"/> )
-        }
-
-        index++;
-    });
    
-    return {x:max_x, y:max_y}
 }
 
 function TimelineGraph(){
@@ -117,18 +90,24 @@ function TimelineGraph(){
         6: {"children":[7,8], "data":"question", "live":true},
         7: {"children":[], "data":"A", "live":false},
         8: {"children":[9], "data":"B", "live":true},
-        9:  {"children":[10, 11], "data":"q", "live":true},
+        9:  {"children":[10, 11, 12, 13, 14], "data":"q", "live":true},
         10: {"children":[], "data":"C", "live":true},
         11: {"children":[], "data":"D", "live":false},
+        12: {"children":[], "data":"E", "live":false},
+        13: {"children":[], "data":"F", "live":false},
+        14: {"children":[], "data":"G", "live":false},
     });
 
     let links:JSX.Element[] = [];
     let nodes:JSX.Element[] = [];
     let path_colors:JSX.Element[] = [];
     let viewBoxsize:Point = GenerateTreeElements(tree, links, nodes, path_colors);
-
+    let zoom = 1;
+    if (viewBoxsize.y > 100){
+        zoom = 1 + ((viewBoxsize.y - 100)/100)
+    }
     return (
-        <TransformWrapper limitToBounds={false}>
+        <TransformWrapper limitToBounds={false} initialScale={zoom}  initialPositionX={-(zoom-1)* (window.innerWidth / 2)} initialPositionY={0}>
             <TransformComponent>
                 <svg viewBox={`0 0 ${viewBoxsize.x} ${viewBoxsize.y}`}
                     style={{ width: "100vw", height: "100vh", position: "relative"}}>

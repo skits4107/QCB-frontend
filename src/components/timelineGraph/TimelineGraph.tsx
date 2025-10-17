@@ -1,8 +1,7 @@
-import { useState, type JSX } from "react"
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import TimelineNode from "../node/TimelineNode";
 import "./TimeLineGraph.css"
-
+import {type JSX } from "react"
 type Point = {
     x:number
     y:number
@@ -11,7 +10,7 @@ type Point = {
 // returns how big the svg viewbox needs to be
 function GenerateTreeElements(treeData:Record<number, Record<string, any>>, links:JSX.Element[], nodes:JSX.Element[], path_colors:JSX.Element[]):Point{
     let current_x:number = 50; 
-    let current_y:number = 10; 
+    let current_y:number = 100; 
     let max_x = 100;
     let max_y = 100;
 
@@ -74,42 +73,42 @@ function GenerateTreeElements(treeData:Record<number, Record<string, any>>, link
 
    
 }
-
-function TimelineGraph(){
-
-    //example tree data for now. get from backend later (would be reutning as json fomrated like this).
-    // tree data will probably be passed as a prop.
-    const [tree, setTree] = useState<Record<number, Record<string, any>>>({
-        0: {"children":[1,2], "data":"should I eat a burger or a milk shake", "live":true},
-        1: {"children":[3], "data":"burger", "live":true},
-        2: {"children":[], "data":"milk shake", "live":false},
-        3: {"children":[4,5], "data":"should I watch show Y or Show X", "live":true},
-        4: {"children":[], "data":"Y", "live":false},
-        5: {"children":[6], "data":"X", "live":true},
-        6: {"children":[7,8], "data":"question", "live":true},
-        7: {"children":[], "data":"A", "live":false},
-        8: {"children":[9], "data":"B", "live":true},
-        9:  {"children":[10, 11, 12, 13, 14], "data":"q", "live":true},
-        10: {"children":[], "data":"C", "live":true},
-        11: {"children":[], "data":"D", "live":false},
-        12: {"children":[], "data":"E", "live":false},
-        13: {"children":[], "data":"F", "live":false},
-        14: {"children":[], "data":"G", "live":false},
-    });
+type timelineTree = {tree: Record<number, Record<string, any>>};
+function TimelineGraph({tree}:timelineTree){
 
     let links:JSX.Element[] = [];
     let nodes:JSX.Element[] = [];
     let path_colors:JSX.Element[] = [];
     let viewBoxsize:Point = GenerateTreeElements(tree, links, nodes, path_colors);
+    viewBoxsize.y *= 1.25;// to expand the size of the grid
+
+    //xoom based on graph size
     let zoom = 1;
     if (viewBoxsize.y > 100){
         zoom = 1 + ((viewBoxsize.y - 100)/100)
     }
+    
+    //grid lines
+    let lines:JSX.Element[] = [];
+    let height:number = (window.innerHeight > viewBoxsize.y) ? window.innerHeight : viewBoxsize.y;
+    let width:number = (window.innerWidth > viewBoxsize.x) ? window.innerWidth : viewBoxsize.x;
+    for (let i =-width/2; i<=width/2; i += 5){ 
+        lines.push(<line x1={i} y1="0" x2={i} y2={window.innerHeight} stroke="white" strokeWidth={0.2} strokeOpacity={0.2}/>); 
+    } 
+    for (let i =-height/2; i<=height/2; i += 5){ 
+        lines.push(<line y1={i} x1={-window.innerWidth /2} y2={i} x2={window.innerWidth} stroke="white" strokeWidth={0.2} strokeOpacity={0.2}/>); 
+    }
+
+
     return (
-        <TransformWrapper limitToBounds={false} initialScale={zoom}  initialPositionX={-(zoom-1)* (window.innerWidth / 2)} initialPositionY={0}>
+        
+        <TransformWrapper limitToBounds={false} initialScale={zoom}  initialPositionX={-(zoom-1)* (window.innerWidth / 2)} initialPositionY={-window.innerHeight/1.25}>
+            
             <TransformComponent>
+              
                 <svg viewBox={`0 0 ${viewBoxsize.x} ${viewBoxsize.y}`}
                     style={{ width: "100vw", height: "100vh", position: "relative"}}>
+                        {lines}
                     <defs>
                         {path_colors}
                     </defs>
@@ -117,9 +116,11 @@ function TimelineGraph(){
                     {nodes}
                 </svg>
                
-                
             </TransformComponent>
+            
         </TransformWrapper>
+        
+        
     );
 }
 export default TimelineGraph

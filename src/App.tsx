@@ -1,6 +1,5 @@
 import './App.css'
-import './components/timelineGraph/TimelineGraph'
-import TimelinePage from './pages/TimeLinePage'
+import TimelinePage from './pages/TimelinePage'
 
 function App() {
 

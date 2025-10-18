@@ -10,7 +10,7 @@ type Point = {
 // returns how big the svg viewbox needs to be
 function GenerateTreeElements(treeData:Record<number, Record<string, any>>, links:JSX.Element[], nodes:JSX.Element[], path_colors:JSX.Element[]):Point{
     let current_x:number = 50; 
-    let current_y:number = 100; 
+    let current_y:number = 50; 
     let max_x = 100;
     let max_y = 100;
 
@@ -80,7 +80,7 @@ function TimelineGraph({tree}:timelineTree){
     let nodes:JSX.Element[] = [];
     let path_colors:JSX.Element[] = [];
     let viewBoxsize:Point = GenerateTreeElements(tree, links, nodes, path_colors);
-    viewBoxsize.y *= 1.25;// to expand the size of the grid
+    viewBoxsize.y *= 2;// to expand the size of the grid
 
     //xoom based on graph size
     let zoom = 1;
@@ -92,17 +92,17 @@ function TimelineGraph({tree}:timelineTree){
     let lines:JSX.Element[] = [];
     let height:number = (window.innerHeight > viewBoxsize.y) ? window.innerHeight : viewBoxsize.y;
     let width:number = (window.innerWidth > viewBoxsize.x) ? window.innerWidth : viewBoxsize.x;
-    for (let i =-width/2; i<=width/2; i += 5){ 
+    for (let i =-width; i<=width; i += 5){ 
         lines.push(<line x1={i} y1="0" x2={i} y2={window.innerHeight} stroke="white" strokeWidth={0.2} strokeOpacity={0.2}/>); 
     } 
-    for (let i =-height/2; i<=height/2; i += 5){ 
+    for (let i =-height; i<=height; i += 5){ 
         lines.push(<line y1={i} x1={-window.innerWidth /2} y2={i} x2={window.innerWidth} stroke="white" strokeWidth={0.2} strokeOpacity={0.2}/>); 
     }
 
 
     return (
         
-        <TransformWrapper limitToBounds={false} initialScale={zoom}  initialPositionX={-(zoom-1)* (window.innerWidth / 2)} initialPositionY={-window.innerHeight/1.25}>
+        <TransformWrapper limitToBounds={false} initialScale={zoom}  initialPositionX={-(zoom-1)* (window.innerWidth / 2)} initialPositionY={-window.innerHeight/4}>
             
             <TransformComponent>
               

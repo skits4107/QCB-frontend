@@ -44,7 +44,7 @@ function getLatestId(tree:Record<number, Record<string, any>>):number{
 function CreateBranchUI({tree, setTree}: timelineTreeProp){
 
     const [options, setOptions] = useState<string[]>([]);
-    const [question, setQuestion] = useState("Enter question. EX: should I eat cheese burger or chicken nuggets");
+    const [question, setQuestion] = useState("");
 
     let optionElements: JSX.Element[] = [];
 
@@ -111,12 +111,13 @@ function CreateBranchUI({tree, setTree}: timelineTreeProp){
         <div className="BranchUIcontainer">
             <textarea key="questionTextarea" 
                 className="BranchUItextarea" 
+                placeholder="Enter question. EX: should I eat cheese burger or chicken nuggets"
                 defaultValue={question} 
                 onChange={(e) => setQuestion(e.target.value)} >
             </textarea>
 
 
-            <textarea className="BranchUItextarea" onKeyDown={addOption} defaultValue=" Enter option. EX: chese burger">
+            <textarea className="BranchUItextarea" onKeyDown={addOption} placeholder=" Enter option. EX: chese burger">
             </textarea>
 
 

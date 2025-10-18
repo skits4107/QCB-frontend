@@ -2,10 +2,7 @@ import { useState } from "react"
 import TimelineGraph from "../components/timelineGraph/TimelineGraph";
 import CreateBranchUI from "../components/createBranchUI/createBranchUI";
 
-function TimelinePage(){
-    //example tree data for now. get from backend later (would be reutning as json fomrated like this).
-    // tree data will probably be passed as a prop.
-    const [tree, setTree] = useState<Record<number, Record<string, any>>>({
+/* exmaple data {
         0: {"children":[1,2], "data":"should I eat a burger or a milk shake", "live":true},
         1: {"children":[3], "data":"burger", "live":true},
         2: {"children":[], "data":"milk shake", "live":false},
@@ -21,6 +18,12 @@ function TimelinePage(){
         12: {"children":[], "data":"E", "live":false},
         13: {"children":[], "data":"F", "live":false},
         14: {"children":[], "data":"G", "live":false},
+    }*/
+function TimelinePage(){
+    //example tree data for now. get from backend later (would be reutning as json fomrated like this).
+    // tree data will probably be passed as a prop.
+    const [tree, setTree] = useState<Record<number, Record<string, any>>>({
+        0: {"children":[], "data":"start", "live":true},
     });
 
     return (

@@ -1,10 +1,16 @@
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import TimelineNode from "../node/TimelineNode";
 import "./TimeLineGraph.css"
-import {type JSX } from "react"
+import { useState, type JSX } from "react"
 type Point = {
     x:number
     y:number
+}
+
+type NodePopover = {
+    content:string,
+    x:number|string,
+    y:number|string
 }
 
 // returns how big the svg viewbox needs to be
@@ -79,6 +85,20 @@ function TimelineGraph({tree}:timelineTree){
     let links:JSX.Element[] = [];
     let nodes:JSX.Element[] = [];
     let path_colors:JSX.Element[] = [];
+
+    const [popOver, setPopOver] = useState<NodePopover|null>(null);
+
+    const onNodeHover = (nodeInfo:NodePopover|null) => {
+        if (nodeInfo){
+            setPopOver(nodeInfo);
+        }
+    }
+    const onNodeLeave = () => {
+        
+            setPopOver(null);
+        
+    }
+
     let viewBoxsize:Point = GenerateTreeElements(tree, links, nodes, path_colors);
     viewBoxsize.y *= 2;// to expand the size of the grid
 
@@ -115,6 +135,8 @@ function TimelineGraph({tree}:timelineTree){
                     {links}
                     {nodes}
                 </svg>
+
+
                
             </TransformComponent>
             

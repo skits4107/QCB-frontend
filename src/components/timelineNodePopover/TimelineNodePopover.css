@@ -1,0 +1,15 @@
+.TimelinePopover{
+    border-radius: 8px;
+    border-width: 2px;
+    border-color: rgb(255,191,0);
+    border-style: solid;
+    background-color: rgb(67, 67, 67);
+    opacity: 1;
+    size:1;
+    z-index: 2;
+}
+
+.NodeCircle:hover .TimelinePopover{
+    opacity: 1;
+    size:1;
+}

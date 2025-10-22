@@ -1,6 +1,6 @@
 import { useState } from "react"
 import TimelineGraph from "../components/timelineGraph/TimelineGraph";
-import CreateBranchUI from "../components/createBranchUI/createBranchUI";
+import CreateBranchUI from "../components/createBranchUI/CreateBranchUI";
 
 /* exmaple data {
         0: {"children":[1,2], "data":"should I eat a burger or a milk shake", "live":true},
@@ -19,6 +19,45 @@ import CreateBranchUI from "../components/createBranchUI/createBranchUI";
         13: {"children":[], "data":"F", "live":false},
         14: {"children":[], "data":"G", "live":false},
     }*/
+//temporary function for testing front end, will be replaced with API calls to get quantum random selection.
+function selectOption(options:string[]):string{
+     return options[Math.floor(Math.random() * options.length)];
+}
+
+function getLatestLiveNode(tree:Record<number, Record<string, any>>):Record<string, any>{
+    let current_node: Record<string, any>|null = tree[0]
+    let most_recent_live = current_node;
+    while (current_node){
+        if (current_node["children"].length === 0){
+            break; //current node will be most recent live child
+        }
+
+        let next_node = null;
+        current_node["children"].forEach((child: number) =>{
+            let child_node = tree[child];
+            if (child_node && child_node["live"]){
+                most_recent_live = child_node; // go to next child.
+                next_node = child_node;
+            }
+        })
+        current_node = next_node;
+    }
+    return most_recent_live;
+}
+
+
+function getLatestId(tree:Record<number, Record<string, any>>):number{
+    let latest_id = 0;
+    for(const id in tree){
+        const numId = Number(id); // javascript/typescript is stupid
+        if (numId > latest_id){
+            latest_id = numId;
+        }
+    }
+    return latest_id;
+}
+
+
 function TimelinePage(){
     //example tree data for now. get from backend later (would be reutning as json fomrated like this).
     // tree data will probably be passed as a prop.
@@ -26,11 +65,45 @@ function TimelinePage(){
         0: {"children":[], "data":"start", "live":true},
     });
 
+    const updateTree = (question:string, options:string[]) =>{
+        if (options.length <= 1){
+            alert("need at least 2 options");
+            return;
+        }
+        //setOptions([]);
+        setTree( prevTree => {
+            let new_tree: Record<number, Record<string, any>> = {
+                ...prevTree    
+            };
+            console.log(new_tree);
+            let live_option = selectOption(options);
+
+            let latest_id = getLatestId(tree);
+
+            let most_recent_live = getLatestLiveNode(new_tree);
+
+            //question id is latest_id + 1
+            most_recent_live["children"] = [latest_id+1]; //most reecent shouldnt have any previous children currently
+            latest_id++;
+
+            let question_children:number[] = [];
+            for (let i=0; i<options.length; i++){
+                question_children.push(latest_id+i+1); //start at 1, because latest_id is the id for the question now.
+                new_tree[latest_id+i+1] = {"children":[], "data":options[i], "live":options[i] === live_option}
+            }
+
+            let questionNode: Record<string, any> = {"children":question_children, "data":question, "live":true}
+            new_tree[latest_id] = questionNode;
+
+            return new_tree;
+        });
+    }
+
     return (
     <>
         <TimelineGraph tree={tree}/>
-        <CreateBranchUI tree={tree} setTree={setTree}/>
+        <CreateBranchUI updateTree={updateTree}/>
     </>);
 }
 
-export default TimelinePage
+export default TimelinePage;

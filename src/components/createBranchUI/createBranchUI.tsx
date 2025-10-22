@@ -20,6 +20,10 @@ function CreateBranchUI({updateTree}: UpdateTreeProps){
             const value = textarea.value.trim();
         
             if (value) {
+                if (options.includes(value)){
+                    alert("all options have to be uinique");
+                    return;
+                }
                 setOptions(prev => [...prev, value.trim()]);
                 event.currentTarget.value = "";
             }

@@ -1,5 +1,6 @@
 import "./CreateBranchUI.css"
 import { useState, type JSX } from "react"
+import OptionItem from "../optionItem/OptionItem.tsx";
 
 type UpdateTreeProps  = { updateTree: (question: string, options: string[]) => void};
 
@@ -30,13 +31,15 @@ function CreateBranchUI({updateTree}: UpdateTreeProps){
     setOptions([])
     updateTree(question, options)
    }
+
+   const removeOption = (option:string) =>{
+        setOptions(options.filter(item => item !== option))
+   }
     
     options.forEach(
         option =>{
             optionElements.push(
-                <li className="BranchUIoption">
-                    {option}
-                </li>
+                <OptionItem text={option} removeOption={removeOption}/>
             );
         }
     );
@@ -55,10 +58,10 @@ function CreateBranchUI({updateTree}: UpdateTreeProps){
             </textarea>
 
 
-            <ol className="BranchUIoptionList">
+            <div className="BranchUIoptionList">
                 {optionElements}
-            </ol>
-            <button onClick={onSplitBtnClicked}>Choose!</button>
+            </div>
+            <button className="splitBtn" onClick={onSplitBtnClicked}>Split the universe!</button>
         </div>
     );
 }

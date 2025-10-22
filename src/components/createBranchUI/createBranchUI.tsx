@@ -1,10 +1,10 @@
 import "./CreateBranchUI.css"
 import { useState, type JSX } from "react"
 
-type timelineTreeProp = { updateTree: (question: string, options: string[]) => void};
+type UpdateTreeProps  = { updateTree: (question: string, options: string[]) => void};
 
 
-function CreateBranchUI({updateTree}: timelineTreeProp){
+function CreateBranchUI({updateTree}: UpdateTreeProps){
 
     const [options, setOptions] = useState<string[]>([]);
     const [question, setQuestion] = useState("");

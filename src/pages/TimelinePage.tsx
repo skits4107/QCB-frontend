@@ -20,8 +20,20 @@ import CreateBranchUI from "../components/createBranchUI/CreateBranchUI";
         14: {"children":[], "data":"G", "live":false},
     }*/
 //temporary function for testing front end, will be replaced with API calls to get quantum random selection.
-function selectOption(options:string[]):string{
-     return options[Math.floor(Math.random() * options.length)];
+async function selectOption(options:string[]):Promise<string>{
+    // have to use proxy due to CORS not working with the API. I am using this API: https://www.lfdr.de/QRNG/
+     const response = await fetch(
+    "https://patient-breeze-5ec6.aaronjosua719.workers.dev"
+  );
+
+
+    const data = await response.json();
+
+    const num = parseInt(data.qrn, 16)
+
+    const index = num % options.length;
+
+    return options[index];
 }
 
 function getLatestLiveNode(tree:Record<number, Record<string, any>>):Record<string, any>{
@@ -65,19 +77,19 @@ function TimelinePage(){
         0: {"children":[], "data":"start", "live":true},
     });
 
-    const updateTree = (question:string, options:string[]) =>{
+    const updateTree = async (question:string, options:string[]) =>{
         if (options.length <= 1){
             alert("need at least 2 options");
             return;
         }
-        //setOptions([]);
+
+        let live_option = await selectOption(options);
         setTree( prevTree => {
             let new_tree: Record<number, Record<string, any>> = {
                 ...prevTree    
             };
             console.log(new_tree);
-            let live_option = selectOption(options);
-
+            
             let latest_id = getLatestId(tree);
 
             let most_recent_live = getLatestLiveNode(new_tree);

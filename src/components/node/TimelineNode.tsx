@@ -1,4 +1,4 @@
-import TimelineNodePopover from '../timelineNodePopover/timelineNodePopover';
+
 import './TimelineNode.css'
 import { useState } from "react"
 
@@ -47,7 +47,6 @@ function TimelineNode({data, x, y, live}:NodeData){
                 style={{ filter: `drop-shadow(0px 0px 1px ${color})` }}/>
               
             {content}
-            <TimelineNodePopover text={data} x={0} y={0}/>
        
         </>
     );

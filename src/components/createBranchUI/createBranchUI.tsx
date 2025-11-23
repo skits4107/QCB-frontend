@@ -31,9 +31,9 @@ function CreateBranchUI({updateTree}: UpdateTreeProps){
         }
     };
 
-   const onSplitBtnClicked = () =>{
+   const onSplitBtnClicked = async () =>{
+    await updateTree(question, options)
     setOptions([])
-    updateTree(question, options)
    }
 
    const removeOption = (option:string) =>{

@@ -2,6 +2,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import TimelineNode from "../node/TimelineNode";
 import "./TimeLineGraph.css"
 import { useState, type JSX } from "react"
+import TimelineNodePopover from "../timelineNodePopover/TimelineNodePopover";
 type Point = {
     x:number
     y:number
@@ -9,12 +10,16 @@ type Point = {
 
 type NodePopover = {
     content:string,
-    x:number|string,
-    y:number|string
+    x:number,
+    y:number
 }
 
+type NodeHoverType = (nodeInfo: NodePopover | null) => void
+
 // returns how big the svg viewbox needs to be
-function GenerateTreeElements(treeData:Record<number, Record<string, any>>, links:JSX.Element[], nodes:JSX.Element[], path_colors:JSX.Element[]):Point{
+function GenerateTreeElements(treeData:Record<number, Record<string, any>>, links:JSX.Element[], 
+    nodes:JSX.Element[], path_colors:JSX.Element[], onNodeHover:NodeHoverType, onNodeLeave:() => void):Point{
+
     let current_x:number = 50; 
     let current_y:number = 50; 
     let max_x = 100;
@@ -25,7 +30,9 @@ function GenerateTreeElements(treeData:Record<number, Record<string, any>>, link
     let index:number = 0;
     while (current_node){
 
-        nodes.push(<TimelineNode data={current_node["data"]} x={current_x} y={current_y} live={current_node["live"]}/>);
+        nodes.push(<TimelineNode data={current_node["data"]} x={current_x} y={current_y} live={current_node["live"]}
+        onHover={onNodeHover} onLeave={onNodeLeave}
+        />);
 
         let children:number[] = current_node["children"];
 
@@ -52,7 +59,9 @@ function GenerateTreeElements(treeData:Record<number, Record<string, any>>, link
 
                     line_color = `url(#lineSeg${index})`
 
-                    nodes.push(<TimelineNode data={child_node["data"]} x={child_x} y={child_y} live={child_node["live"]}/>);
+                    nodes.push(<TimelineNode data={child_node["data"]} x={child_x} y={child_y} live={child_node["live"]}
+                     onHover={onNodeHover} onLeave={onNodeLeave}
+                     />);
                 }
             else{
                 //there should only be one live node.
@@ -99,7 +108,7 @@ function TimelineGraph({tree}:timelineTree){
         
     }
 
-    let viewBoxsize:Point = GenerateTreeElements(tree, links, nodes, path_colors);
+    let viewBoxsize:Point = GenerateTreeElements(tree, links, nodes, path_colors, onNodeHover, onNodeLeave);
     viewBoxsize.y *= 2;// to expand the size of the grid
 
     //xoom based on graph size
@@ -120,25 +129,31 @@ function TimelineGraph({tree}:timelineTree){
     }
 
 
+
     return (
         
         <TransformWrapper limitToBounds={false} initialScale={zoom}  initialPositionX={-(zoom-1)* (window.innerWidth / 2)} initialPositionY={-window.innerHeight/4}>
             
             <TransformComponent>
-              
-                <svg className="TimelineSVG" viewBox={`0 0 ${viewBoxsize.x} ${viewBoxsize.y}`}
-                    style={{ width: "100vw", height: "100vh", position: "relative"}}>
-                        {lines}
-                    <defs>
-                        {path_colors}
-                    </defs>
-                    {links}
-                    {nodes}
-                </svg>
-
-
-               
+                
+                    <svg className="TimelineSVG" viewBox={`0 0 ${viewBoxsize.x} ${viewBoxsize.y}`}
+                        style={{ width: "100vw", height: "100vh", position: "relative"}}>
+                            {lines}
+                        <defs>
+                            {path_colors}
+                        </defs>
+                        {links}
+                        {nodes}
+                    </svg>
+                    
             </TransformComponent>
+            {popOver && (
+                <TimelineNodePopover
+                text={popOver.content}
+                x={popOver.x}
+                y={popOver.y}
+                />
+            )}
             
         </TransformWrapper>
         

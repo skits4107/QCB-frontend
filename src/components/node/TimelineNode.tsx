@@ -2,11 +2,20 @@
 import './TimelineNode.css'
 import { useState } from "react"
 
+
+type NodePopover = {
+    content:string,
+    x:number,
+    y:number
+}
+
 type NodeData = {
     data:string,
-    x:number|string,
-    y:number|string,
+    x:number,
+    y:number,
     live:boolean
+    onHover:(nodeInfo: NodePopover | null) => void
+    onLeave:() => void
 }
 
 function truncateText(text: string, maxChars: number) {
@@ -14,7 +23,7 @@ function truncateText(text: string, maxChars: number) {
   return text.slice(0, maxChars - 3) + "...";
 }
 
-function TimelineNode({data, x, y, live}:NodeData){
+function TimelineNode({data, x, y, live, onHover, onLeave}:NodeData){
     let content;
     const [radius, setRadius] = useState(1);
     if (data){
@@ -25,8 +34,9 @@ function TimelineNode({data, x, y, live}:NodeData){
                     y={y}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    onMouseOver={()=>setRadius(2)} 
-                    onMouseOut={()=>setRadius(1)}
+                    onMouseEnter={()=>onHover({content:data, x:x, y:y})}
+                onMouseOver={()=>{setRadius(2)}} 
+                onMouseOut={()=>{setRadius(1); onLeave()}}
                     fill={live?'rgba(255,255,255,1)' : 'rgba(255,255,255,0.5)'}>
                         {truncateText(data, 10)}
                     </text>;
@@ -42,8 +52,9 @@ function TimelineNode({data, x, y, live}:NodeData){
             
             
             <circle className="NodeCircle" cx={x} cy={y} r={radius} fill={color}
-                onMouseOver={()=>setRadius(2)} 
-                onMouseOut={()=>setRadius(1)}
+                onMouseEnter={()=>onHover({content:data, x:x, y:x})}
+                onMouseOver={()=>{setRadius(2)}} 
+                onMouseOut={()=>{setRadius(1); onLeave()}}
                 style={{ filter: `drop-shadow(0px 0px 1px ${color})` }}/>
               
             {content}

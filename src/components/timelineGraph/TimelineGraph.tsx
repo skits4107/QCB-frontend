@@ -131,11 +131,12 @@ function TimelineGraph({tree}:timelineTree){
 
 
     return (
-        
-        <TransformWrapper limitToBounds={false} initialScale={zoom}  initialPositionX={-(zoom-1)* (window.innerWidth / 2)} initialPositionY={-window.innerHeight/4}>
-            
-            <TransformComponent>
+        <div>
+            <TransformWrapper limitToBounds={false} initialScale={zoom}  initialPositionX={-(zoom-1)* (window.innerWidth / 2)} initialPositionY={-window.innerHeight/4}>
                 
+                <TransformComponent>
+
+                       
                     <svg className="TimelineSVG" viewBox={`0 0 ${viewBoxsize.x} ${viewBoxsize.y}`}
                         style={{ width: "100vw", height: "100vh", position: "relative"}}>
                             {lines}
@@ -145,19 +146,21 @@ function TimelineGraph({tree}:timelineTree){
                         {links}
                         {nodes}
                     </svg>
-                    
-            </TransformComponent>
+                        
+              
+                        
+                </TransformComponent>
+                
+            </TransformWrapper>
+
             {popOver && (
-                <TimelineNodePopover
-                text={popOver.content}
-                x={popOver.x}
-                y={popOver.y}
-                />
-            )}
-            
-        </TransformWrapper>
-        
-        
+            <TimelineNodePopover
+                    text={popOver.content}
+                    x={popOver.x}
+                    y={popOver.y}
+                    />
+                )}
+        </div>
     );
 }
 export default TimelineGraph

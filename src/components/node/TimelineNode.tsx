@@ -34,7 +34,7 @@ function TimelineNode({data, x, y, live, onHover, onLeave}:NodeData){
                     y={y}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    onMouseEnter={()=>onHover({content:data, x:x, y:y})}
+                    onMouseEnter={(event)=>onHover({content:data, x:event.pageX+10, y:event.pageY-20})}
                 onMouseOver={()=>{setRadius(2)}} 
                 onMouseOut={()=>{setRadius(1); onLeave()}}
                     fill={live?'rgba(255,255,255,1)' : 'rgba(255,255,255,0.5)'}>

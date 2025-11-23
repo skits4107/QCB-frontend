@@ -1,7 +1,6 @@
 # Quantum Cheese Burger
 A web app designed to make decision making easier for the user. The User will be able to enter a question such as "Should I go out for a burger or stay home for dinner?" and provide options such as "burger" and 
-"stay home." Then using a Quantum Random Number Generator the app will select which choice they should make. This repo is the frontend, the backend (in a private repo) will handle user authentication, user data, 
-and communicating to the QRNG API. 
+"stay home." Then using a Quantum Random Number Generator the app will select which choice they should make.
 
 Under the Many Worlds Interpretation of Quantum Mechanics everytime a Quantum measurement is made each possible observation is realized in their own respective "universes" or "timelines". It in effect states that 
 Instead of the wave function collapsing, the universe instead gets put into a giant state superposition where each of the different possible states are the different "universes". So contrary to popular belief, 
